@@ -26,10 +26,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
+    super.dispose();
     nameController!.dispose();
     emailController!.dispose();
     passwordController!.dispose();
-    super.dispose();
   }
 
   @override
@@ -38,76 +38,97 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         title: const Text("Register Page,"),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            "Register User",
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          TextField(
-            controller: nameController,
-            decoration: const InputDecoration(
-              labelText: "Name",
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "Register User",
             ),
-          ),
-          TextField(
-            controller: emailController,
-            decoration: const InputDecoration(
-              labelText: "Email",
+            const SizedBox(
+              height: 16,
             ),
-          ),
-          TextField(
-            obscureText: true,
-            controller: passwordController,
-            decoration: const InputDecoration(
-              labelText: "Password",
+            TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                labelText: "Name",
+              ),
             ),
-          ),
-          BlocConsumer(
-            builder: (context, state) {
-              if (state is RegisterLoading) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              return ElevatedButton(
-                onPressed: () {
-                  final requestModel = RegisterRequestModel(
-                    name: nameController!.text,
-                    email: emailController!.text,
-                    password: passwordController!.text,
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: "Email",
+              ),
+            ),
+            TextField(
+              obscureText: true,
+              controller: passwordController,
+              decoration: const InputDecoration(
+                labelText: "Password",
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            BlocConsumer<RegisterBloc, RegisterState>(
+              builder: (context, state) {
+                if (state is RegisterLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
-                  context.read<RegisterBloc>().add(
-                        DoRegisterEvent(
-                          model: requestModel,
-                        ),
-                      );
-                },
-                child: const Text("Register"),
-              );
-            },
-            listener: (context, state) {
-              if (state is RegisterError) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(state.message),
-                    backgroundColor: Colors.red,
-                  ),
+                }
+                return ElevatedButton(
+                  onPressed: () {
+                    final requestModel = RegisterRequestModel(
+                      name: nameController!.text,
+                      email: emailController!.text,
+                      password: passwordController!.text,
+                    );
+                    context.read<RegisterBloc>().add(
+                          DoRegisterEvent(
+                            model: requestModel,
+                          ),
+                        );
+                  },
+                  child: const Text("Register"),
                 );
-              }
-              if (state is RegisterSuccess) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      "Register success with id: ${state.model}",
+              },
+              listener: (context, state) {
+                if (state is RegisterError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.message),
+                      backgroundColor: Colors.red,
                     ),
-                    backgroundColor: Colors.green,
-                  ),
-                );
+                  );
+                }
+                if (state is RegisterSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "Register success with id: ${state.model.id}",
+                      ),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return const LoginPage();
+                      },
+                    ),
+                  );
+                }
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            InkWell(
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -116,64 +137,67 @@ class _RegisterPageState extends State<RegisterPage> {
                     },
                   ),
                 );
-              }
-            },
-          ),
-          // BlocListener<RegisterBloc, RegisterState>(
-          //   listener: (context, state) {
-          //     if (state is RegisterError) {
-          //       ScaffoldMessenger.of(context).showSnackBar(
-          //         SnackBar(
-          //           content: Text(state.message),
-          //           backgroundColor: Colors.red,
-          //         ),
-          //       );
-          //     }
-          //     if (state is RegisterSuccess) {
-          //       ScaffoldMessenger.of(context).showSnackBar(
-          //         SnackBar(
-          //           content: Text(
-          //             "Register success with id: ${state.model}",
-          //           ),
-          //           backgroundColor: Colors.green,
-          //         ),
-          //       );
-          //       Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //           builder: (context) {
-          //             return const LoginPage();
-          //           },
-          //         ),
-          //       );
-          //     }
-          //   },
-          //   child: BlocBuilder<RegisterBloc, RegisterState>(
-          //     builder: (context, state) {
-          //       if (state is RegisterLoading) {
-          //         return const Center(
-          //           child: CircularProgressIndicator(),
-          //         );
-          //       }
-          //       return ElevatedButton(
-          //         onPressed: () {
-          //           final requestModel = RegisterRequestModel(
-          //             name: nameController!.text,
-          //             email: emailController!.text,
-          //             password: passwordController!.text,
-          //           );
-          //           context.read<RegisterBloc>().add(
-          //                 DoRegisterEvent(
-          //                   model: requestModel,
-          //                 ),
-          //               );
-          //         },
-          //         child: const Text("Register"),
-          //       );
-          //     },
-          //   ),
-          // ),
-        ],
+              },
+              child: const Text(
+                "Sudah punya akun? Login",
+              ),
+            ),
+            // BlocListener<RegisterBloc, RegisterState>(
+            //   listener: (context, state) {
+            //     if (state is RegisterError) {
+            //       ScaffoldMessenger.of(context).showSnackBar(
+            //         SnackBar(
+            //           content: Text(state.message),
+            //           backgroundColor: Colors.red,
+            //         ),
+            //       );
+            //     }
+            //     if (state is RegisterSuccess) {
+            //       ScaffoldMessenger.of(context).showSnackBar(
+            //         SnackBar(
+            //           content: Text(
+            //             "Register success with id: ${state.model}",
+            //           ),
+            //           backgroundColor: Colors.green,
+            //         ),
+            //       );
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //           builder: (context) {
+            //             return const LoginPage();
+            //           },
+            //         ),
+            //       );
+            //     }
+            //   },
+            //   child: BlocBuilder<RegisterBloc, RegisterState>(
+            //     builder: (context, state) {
+            //       if (state is RegisterLoading) {
+            //         return const Center(
+            //           child: CircularProgressIndicator(),
+            //         );
+            //       }
+            //       return ElevatedButton(
+            //         onPressed: () {
+            //           final requestModel = RegisterRequestModel(
+            //             name: nameController!.text,
+            //             email: emailController!.text,
+            //             password: passwordController!.text,
+            //           );
+            //           context.read<RegisterBloc>().add(
+            //                 DoRegisterEvent(
+            //                   model: requestModel,
+            //                 ),
+            //               );
+            //         },
+            //         child: const Text("Register"),
+            //       );
+            //     },
+            //   ),
+            // ),
+          ],
+        ),
       ),
     );
   }
