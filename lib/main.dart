@@ -1,5 +1,7 @@
+import 'package:fic_bloc_ecatalog_sample/bloc/products/products_bloc.dart';
 import 'package:fic_bloc_ecatalog_sample/data/datasources/auth_datasource.dart';
-import 'package:fic_bloc_ecatalog_sample/presentation/register_page.dart';
+import 'package:fic_bloc_ecatalog_sample/data/datasources/product_datasource.dart';
+import 'package:fic_bloc_ecatalog_sample/presentation/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,6 +25,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => LoginBloc(AuthDatasource()),
         ),
+        BlocProvider(
+          create: (context) => ProductsBloc(ProductDataSource()),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -30,7 +35,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: const RegisterPage(),
+        home: const LoginPage(),
       ),
     );
   }

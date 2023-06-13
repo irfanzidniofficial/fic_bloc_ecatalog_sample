@@ -1,4 +1,6 @@
+import 'package:fic_bloc_ecatalog_sample/data/datasources/local_datasource.dart';
 import 'package:fic_bloc_ecatalog_sample/presentation/home_page.dart';
+import 'package:fic_bloc_ecatalog_sample/presentation/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +22,22 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     emailController = TextEditingController();
     passwordController = TextEditingController();
+    checkAuth();
     super.initState();
+  }
+
+  void checkAuth() async {
+     final auth = await LocalDataSource().getToken();
+    if (auth.isNotEmpty) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) {
+            return const HomePage();
+          },
+        ),
+      );
+    }
   }
 
   @override
@@ -97,6 +114,7 @@ class _LoginPageState extends State<LoginPage> {
                   );
                 }
                 if (state is LoginSuccess) {
+                  LocalDataSource().saveToken(state.model.accessToken);
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text(
@@ -125,13 +143,13 @@ class _LoginPageState extends State<LoginPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) {
-                      return const LoginPage();
+                      return const RegisterPage();
                     },
                   ),
                 );
               },
               child: const Text(
-                "Sudah punya akun? Login",
+                "Belum punya akun? Register",
               ),
             ),
           ],
