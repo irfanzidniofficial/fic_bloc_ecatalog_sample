@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
 import 'package:fic_bloc_ecatalog_sample/data/datasources/product_datasource.dart';
@@ -16,10 +17,32 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   ) : super(ProductsInitial()) {
     on<GetProductsEvent>((event, emit) async {
       emit(ProductsLoading());
-      final result = await dataSource.getAllProduct();
+      final result = await dataSource.getPaginationProduct(
+        offset: 0,
+        limit: 50,
+      );
+      result.fold((error) => emit(ProductsError(message: error)), (result) {
+        bool isNext = result.length == 50; 
+        emit(ProductsSuccess(data: result, isNext: isNext));
+      });
+    });
+
+    on<NextProductsEvent>((event, emit) async {
+      final currentState = state as ProductsSuccess;
+      final result = await dataSource.getPaginationProduct(
+        offset: currentState.offset + 50,
+        limit: 50,
+      );
       result.fold(
         (error) => emit(ProductsError(message: error)),
-        (result) => emit(ProductsSuccess(data: result)),
+        (result) {
+           bool isNext = result.length == 50; 
+          emit(
+            ProductsSuccess(
+                data: [...currentState.data, ...result],
+                offset: currentState.offset + 50, isNext: isNext),
+          );
+        },
       );
     });
   }
