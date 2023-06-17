@@ -22,7 +22,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         limit: 50,
       );
       result.fold((error) => emit(ProductsError(message: error)), (result) {
-        bool isNext = result.length == 50; 
+        bool isNext = result.length == 50;
         emit(ProductsSuccess(data: result, isNext: isNext));
       });
     });
@@ -36,14 +36,38 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       result.fold(
         (error) => emit(ProductsError(message: error)),
         (result) {
-           bool isNext = result.length == 50; 
+          bool isNext = result.length == 50;
           emit(
             ProductsSuccess(
                 data: [...currentState.data, ...result],
-                offset: currentState.offset + 50, isNext: isNext),
+                offset: currentState.offset + 50,
+                isNext: isNext),
           );
         },
       );
     });
+
+    on<AddSingleProductEvent>(
+      (event, emit) async {
+        final currentState = state as ProductsSuccess;
+
+        emit(
+          currentState.copyWith(
+            data: [
+              ...currentState.data,
+              event.data,
+            ],
+          ),
+        );
+      },
+    );
+
+    on<ClearProductsEvent>(
+      (event, emit) async {
+        final currentState = state as ProductsSuccess;
+
+        emit(ProductsInitial());
+      },
+    );
   }
 }

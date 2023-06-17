@@ -55,10 +55,11 @@ class _HomePageState extends State<HomePage> {
           IconButton(
             onPressed: () async {
               await LocalDataSource().removeToken();
+              context.read<ProductsBloc>().add(ClearProductsEvent());
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) {
+                  builder: (_) {
                     return const LoginPage();
                   },
                 ),
@@ -169,6 +170,11 @@ class _HomePageState extends State<HomePage> {
                         );
                       }
                       context.read<ProductsBloc>().add(GetProductsEvent());
+                      // context.read<ProductsBloc>().add(
+                      //       AddSingleProductEvent(
+                      //         data: state.model,
+                      //       ),
+                      //     );
                       titleController!.clear();
                       priceController!.clear();
                       descriptionController!.clear();
