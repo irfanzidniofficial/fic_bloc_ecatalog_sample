@@ -62,12 +62,12 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       },
     );
 
-    on<ClearProductsEvent>(
-      (event, emit) async {
-        final currentState = state as ProductsSuccess;
+    // on<ClearProductsEvent>(
+    //   (event, emit) async {
+    //     final currentState = state as ProductsSuccess;
 
-        emit(ProductsInitial());
-      },
-    );
+    //     emit(ProductsInitial());
+    //   },
+    // );
   }
 }

@@ -1,10 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:bloc/bloc.dart';
+import 'package:fic_bloc_ecatalog_sample/data/datasources/product_datasource.dart';
 import 'package:meta/meta.dart';
 
-import 'package:fic_bloc_ecatalog_sample/data/datasources/product_datasource.dart';
-import 'package:fic_bloc_ecatalog_sample/data/models/request/product_request_model.dart';
 
+
+import '../../data/models/request/product_request_model.dart';
 import '../../data/models/response/product_response_model.dart';
 
 part 'add_product_event.dart';

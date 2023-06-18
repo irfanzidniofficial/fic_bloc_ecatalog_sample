@@ -54,7 +54,6 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             onPressed: () async {
-              await LocalDataSource().removeToken();
               context.read<ProductsBloc>().add(ClearProductsEvent());
               Navigator.push(
                 context,
@@ -64,6 +63,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 ),
               );
+              await LocalDataSource().removeToken();
             },
             icon: const Icon(
               Icons.logout,
@@ -161,6 +161,14 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         );
+                        // context.read<ProductsBloc>().add(GetProductsEvent());
+                        context.read<ProductsBloc>().add(
+                              AddSingleProductEvent(data: state.model),
+                            );
+                        titleController!.clear();
+                        priceController!.clear();
+                        descriptionController!.clear();
+                        Navigator.pop(context);
                       }
                       if (state is AddProductError) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -169,16 +177,6 @@ class _HomePageState extends State<HomePage> {
                           ),
                         );
                       }
-                      context.read<ProductsBloc>().add(GetProductsEvent());
-                      // context.read<ProductsBloc>().add(
-                      //       AddSingleProductEvent(
-                      //         data: state.model,
-                      //       ),
-                      //     );
-                      titleController!.clear();
-                      priceController!.clear();
-                      descriptionController!.clear();
-                      Navigator.pop(context);
                     },
                     builder: (context, state) {
                       if (state is AddProductLoading) {
